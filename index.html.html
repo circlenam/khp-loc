@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D프린팅 기반 랩온어칩 설계·제작 실무 훈련과정 | 재능대학교 K-하이테크플랫폼사업단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d2257;
+    --navy-mid: #1a3a7a;
+    --blue: #1e5bbf;
+    --blue-light: #3d82e8;
+    --cyan: #00c6e0;
+    --cyan-glow: #00e5ff;
+    --orange: #ff6b1a;
+    --orange-light: #ff8c42;
+    --white: #f8faff;
+    --gray-light: #e8eef8;
+    --gray-mid: #8fa3c8;
+    --text-dark: #0a1a40;
+    --green-check: #00c853;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 999;
+    background: rgba(13,34,87,0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(0,198,224,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    height: 62px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--cyan);
+    letter-spacing: 0.04em;
+  }
+  .nav-logo span {
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .nav-badge {
+    background: var(--orange);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+  .nav-links a {
+    color: var(--gray-mid);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: #fff;
+    padding: 8px 22px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(255,107,26,0.35);
+  }
+  .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 6vw 80px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 70% 40%, rgba(30,91,191,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 15% 70%, rgba(0,198,224,0.18) 0%, transparent 60%),
+      linear-gradient(160deg, #0d2257 0%, #071530 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,198,224,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,198,224,0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  .hero-chip-visual {
+    position: absolute;
+    right: -2vw; top: 50%;
+    transform: translateY(-50%);
+    width: 42vw; max-width: 580px;
+    opacity: 0.18;
+    pointer-events: none;
+    filter: hue-rotate(10deg) brightness(1.4);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 620px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(0,198,224,0.12);
+    border: 1px solid rgba(0,198,224,0.35);
+    color: var(--cyan);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 6px 16px;
+    border-radius: 4px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 1.5s ease infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
+
+  .hero-badge-free {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+  .hero-title {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    animation: fadeUp 0.7s ease 0.15s both;
+  }
+  .hero-title .line1 { color: var(--white); display: block; }
+  .hero-title .highlight {
+    color: var(--cyan);
+    display: block;
+    text-shadow: 0 0 30px rgba(0,198,224,0.4);
+  }
+  .hero-title .line2 { color: var(--white); display: block; font-size: 0.78em; font-weight: 700; }
+
+  .hero-subtitle {
+    font-size: 1.02rem;
+    color: var(--gray-mid);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    animation: fadeUp 0.7s ease 0.25s both;
+    font-weight: 400;
+    max-width: 520px;
+  }
+  .hero-tagline {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.12rem;
+    color: var(--orange-light);
+    margin-bottom: 14px;
+    animation: fadeUp 0.7s ease 0.2s both;
+    font-style: italic;
+  }
+  .hero-dates {
+    display: flex; gap: 16px; margin-bottom: 36px;
+    animation: fadeUp 0.7s ease 0.3s both;
+    flex-wrap: wrap;
+  }
+  .date-pill {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(0,198,224,0.25);
+    border-radius: 8px;
+    padding: 12px 22px;
+    text-align: center;
+  }
+  .date-pill .round { font-size: 0.7rem; color: var(--cyan); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .date-pill .date-str { font-size: 1.05rem; font-weight: 700; color: #fff; }
+  .date-pill .time-str { font-size: 0.75rem; color: var(--gray-mid); margin-top: 2px; }
+
+  .hero-actions {
+    display: flex; gap: 14px; align-items: center;
+    animation: fadeUp 0.7s ease 0.38s both;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange) 0%, #ff8c42 100%);
+    color: #fff;
+    padding: 14px 34px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 24px rgba(255,107,26,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,107,26,0.5); }
+  .btn-secondary {
+    color: var(--cyan);
+    border: 1.5px solid var(--cyan);
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: rgba(0,198,224,0.1); }
+
+  .hero-stats {
+    position: absolute;
+    right: 6vw; bottom: 60px;
+    display: flex; gap: 32px;
+    animation: fadeUp 0.7s ease 0.45s both;
+    z-index: 2;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 900; color: var(--cyan); font-family: 'Space Mono', monospace; }
+  .stat-label { font-size: 0.72rem; color: var(--gray-mid); margin-top: 2px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 90px 6vw; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .section-title {
+    font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+  .section-desc {
+    color: var(--gray-mid);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 54px;
+  }
+  .divider {
+    width: 48px; height: 3px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+    margin-bottom: 18px;
+  }
+
+  /* ── FEATURES ── */
+  .features { background: rgba(255,255,255,0.02); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,198,224,0.12);
+    border-radius: 14px;
+    padding: 28px 24px;
+    transition: border-color 0.25s, transform 0.25s, background 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,198,224,0.06), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover { border-color: rgba(0,198,224,0.4); transform: translateY(-4px); background: rgba(255,255,255,0.07); }
+  .feature-card:hover::after { opacity: 1; }
+  .feature-icon {
+    font-size: 2.2rem;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .feature-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .feature-desc { font-size: 0.8rem; color: var(--gray-mid); line-height: 1.55; }
+  .feature-tag {
+    display: inline-block;
+    background: rgba(0,198,224,0.12);
+    color: var(--cyan);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CURRICULUM ── */
+  .curriculum { background: var(--navy); }
+  .curriculum-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .module {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .module:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+  .module-header {
+    padding: 22px 24px 18px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .module-num {
+    width: 38px; height: 38px; min-width: 38px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+  }
+  .module-title-block h3 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .module-title-block p { font-size: 0.75rem; color: rgba(255,255,255,0.55); }
+  .module-body { padding: 0 24px 24px; }
+  .module-list { list-style: none; }
+  .module-list li {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.7);
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .module-list li:last-child { border-bottom: none; }
+  .module-list li::before { content: '›'; color: inherit; font-weight: 700; opacity: 0.7; flex-shrink: 0; }
+
+  /* Module color themes */
+  .m1 { background: linear-gradient(160deg, #0f2e6e 0%, #0d2257 100%); }
+  .m1 .module-header { background: rgba(0,198,224,0.1); }
+  .m1 .module-num { background: var(--cyan); color: var(--navy); }
+  .m1 .module-list li { color: rgba(200,230,255,0.75); }
+
+  .m2 { background: linear-gradient(160deg, #0f3560 0%, #0a2040 100%); }
+  .m2 .module-header { background: rgba(61,130,232,0.15); }
+  .m2 .module-num { background: var(--blue-light); }
+  .m2 .module-list li { color: rgba(200,220,255,0.75); }
+
+  .m3 { background: linear-gradient(160deg, #1a1040 0%, #100930 100%); }
+  .m3 .module-header { background: rgba(120,80,230,0.15); }
+  .m3 .module-num { background: #7c4dff; }
+  .m3 .module-list li { color: rgba(210,200,255,0.75); }
+
+  .m4 { background: linear-gradient(160deg, #2a1200 0%, #1a0a00 100%); }
+  .m4 .module-header { background: rgba(255,107,26,0.15); }
+  .m4 .module-num { background: var(--orange); }
+  .m4 .module-list li { color: rgba(255,220,200,0.75); }
+
+  /* ── SCHEDULE ── */
+  .schedule { background: linear-gradient(180deg, rgba(26,58,122,0.3) 0%, rgba(13,34,87,0.5) 100%); }
+  .schedule-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  @media(max-width:700px){ .schedule-layout { grid-template-columns: 1fr; } }
+
+  .schedule-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,198,224,0.2);
+    border-radius: 16px;
+    padding: 32px 30px;
+    position: relative; overflow: hidden;
+    transition: transform 0.25s;
+  }
+  .schedule-card:hover { transform: translateY(-4px); }
+  .schedule-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--blue-light));
+  }
+  .schedule-round {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .round-badge {
+    background: var(--cyan);
+    color: var(--navy);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+  .schedule-date { font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
+  .schedule-date span { color: var(--cyan); }
+  .schedule-time { font-size: 0.85rem; color: var(--gray-mid); }
+  .schedule-info { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .schedule-info p { font-size: 0.82rem; color: var(--gray-mid); margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+  .schedule-info p strong { color: #fff; }
+
+  .total-box {
+    margin-top: 28px;
+    background: rgba(0,198,224,0.08);
+    border: 1px solid rgba(0,198,224,0.25);
+    border-radius: 12px;
+    padding: 20px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .total-box .label { font-size: 0.82rem; color: var(--gray-mid); }
+  .total-box .value { font-size: 1.5rem; font-weight: 900; color: var(--cyan); font-family: 'Space Mono', monospace; }
+
+  /* ── TARGET ── */
+  .target { background: rgba(255,255,255,0.015); }
+  .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:600px){ .target-grid { grid-template-columns: 1fr; } }
+  .target-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,200,83,0.15);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .target-item:hover { border-color: rgba(0,200,83,0.35); background: rgba(0,200,83,0.05); }
+  .check-icon {
+    width: 28px; height: 28px; min-width: 28px;
+    background: rgba(0,200,83,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--green-check);
+  }
+  .target-text { font-size: 0.88rem; color: rgba(255,255,255,0.82); line-height: 1.55; }
+
+  /* ── BENEFITS ── */
+  .benefits { background: var(--navy); }
+  .benefits-grid {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .benefit-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px 22px;
+    min-width: 140px;
+    flex: 1;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+  .benefit-item:hover { border-color: rgba(0,198,224,0.3); background: rgba(0,198,224,0.05); transform: translateY(-4px); }
+  .benefit-icon { font-size: 2rem; }
+  .benefit-title { font-size: 0.82rem; font-weight: 700; color: #fff; }
+  .benefit-desc { font-size: 0.73rem; color: var(--gray-mid); line-height: 1.45; }
+
+  /* ── LOCATION ── */
+  .location { background: rgba(26,58,122,0.25); }
+  .location-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  @media(max-width:768px){ .location-layout { grid-template-columns: 1fr; } }
+  .location-info h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+  .location-info p { color: var(--gray-mid); font-size: 0.88rem; line-height: 1.65; margin-bottom: 16px; }
+  .location-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,26,0.12);
+    border: 1px solid rgba(255,107,26,0.3);
+    color: var(--orange-light);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+  }
+  .map-placeholder {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,198,224,0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    padding: 24px;
+  }
+  .map-placeholder .map-icon { font-size: 2.8rem; opacity: 0.6; }
+  .map-placeholder p { font-size: 0.82rem; color: var(--gray-mid); }
+  .map-placeholder strong { font-size: 0.9rem; color: #fff; display: block; margin-bottom: 4px; }
+
+  /* ── CONTACT ── */
+  .contact {
+    background: linear-gradient(135deg, #071020 0%, #0d2257 100%);
+    text-align: center;
+    padding: 100px 6vw;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,198,224,0.12), transparent 70%);
+  }
+  .contact-content { position: relative; z-index: 2; }
+  .contact-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 14px; }
+  .contact-title span { color: var(--orange); }
+  .contact-sub { color: var(--gray-mid); font-size: 0.95rem; margin-bottom: 44px; line-height: 1.65; }
+  .contact-cards {
+    display: flex; gap: 20px; justify-content: center; margin-bottom: 44px;
+    flex-wrap: wrap;
+  }
+  .contact-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,198,224,0.2);
+    border-radius: 14px;
+    padding: 24px 30px;
+    text-align: left;
+    min-width: 240px;
+    flex: 1; max-width: 300px;
+  }
+  .contact-card .cc-label { font-size: 0.7rem; color: var(--cyan); letter-spacing: 0.1em; font-weight: 700; margin-bottom: 8px; }
+  .contact-card .cc-val { font-size: 0.95rem; color: #fff; font-weight: 600; }
+  .contact-card .cc-sub { font-size: 0.75rem; color: var(--gray-mid); margin-top: 4px; }
+  .qr-placeholder {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(0,198,224,0.2);
+    border-radius: 14px;
+    padding: 20px 28px;
+  }
+  .qr-box {
+    width: 90px; height: 90px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+  }
+  .qr-label { font-size: 0.72rem; color: var(--gray-mid); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #040d1f;
+    padding: 36px 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gray-mid);
+  }
+  .footer-logo strong { color: var(--cyan); display: block; font-size: 0.82rem; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { color: var(--gray-mid); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-copy { font-size: 0.72rem; color: rgba(143,163,200,0.5); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px){
+    .nav-links { display: none; }
+    .hero-chip-visual { display: none; }
+    .hero-stats { position: static; margin-top: 40px; justify-content: flex-start; }
+  }
+  @media(max-width:600px){
+    section { padding: 60px 5vw; }
+    .hero { padding: 100px 5vw 60px; }
+    .features-grid, .curriculum-grid { grid-template-columns: 1fr; }
+    .benefits-grid { flex-direction: column; }
+  }
+
+  /* Animated chip background */
+  .chip-anim {
+    position: absolute;
+    right: 6vw; top: 50%;
+    transform: translateY(-50%);
+    width: 38vw; max-width: 520px;
+    z-index: 1;
+    opacity: 0.9;
+  }
+  .chip-svg { width: 100%; height: auto; }
+
+  /* Flow line animation */
+  .flow-path {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: flowIn 3s ease forwards 0.5s;
+  }
+  @keyframes flowIn {
+    to { stroke-dashoffset: 0; }
+  }
+  .flow-dot {
+    animation: moveDot 4s linear infinite 3.5s;
+  }
+  @keyframes moveDot {
+    0%   { offset-distance: 0%; opacity: 1; }
+    95%  { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">
+    <span>재능대학교</span>
+    K-하이테크플랫폼사업단
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">교육특징</a></li>
+    <li><a href="#curriculum">교육내용</a></li>
+    <li><a href="#schedule">교육일정</a></li>
+    <li><a href="#target">모집대상</a></li>
+    <li><a href="#contact">문의·신청</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">지금 신청하기 →</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <!-- Animated LoC chip SVG -->
+  <div class="chip-anim">
+    <svg class="chip-svg" viewBox="0 0 520 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Chip body -->
+      <rect x="60" y="40" width="400" height="300" rx="20" fill="rgba(30,91,191,0.12)" stroke="rgba(0,198,224,0.3)" stroke-width="1.5"/>
+      <!-- Channel paths -->
+      <path d="M 80 190 Q 120 190 140 140 Q 160 90 200 90 L 340 90 Q 380 90 400 140 Q 420 190 440 190" stroke="rgba(0,198,224,0.6)" stroke-width="2.5" fill="none" class="flow-path"/>
+      <path d="M 80 200 L 440 200" stroke="rgba(61,130,232,0.5)" stroke-width="2.5" fill="none" class="flow-path" style="animation-delay:0.8s"/>
+      <path d="M 80 210 Q 120 210 140 260 Q 160 310 200 310 L 340 310 Q 380 310 400 260 Q 420 210 440 210" stroke="rgba(0,198,224,0.45)" stroke-width="2.5" fill="none" class="flow-path" style="animation-delay:1.2s"/>
+      <!-- Inlets/outlets -->
+      <circle cx="80" cy="190" r="8" fill="rgba(0,198,224,0.8)"/>
+      <circle cx="80" cy="200" r="8" fill="rgba(61,130,232,0.8)"/>
+      <circle cx="80" cy="210" r="8" fill="rgba(0,198,224,0.6)"/>
+      <circle cx="440" cy="190" r="8" fill="rgba(255,107,26,0.8)"/>
+      <circle cx="440" cy="200" r="8" fill="rgba(255,140,66,0.8)"/>
+      <circle cx="440" cy="210" r="8" fill="rgba(255,107,26,0.6)"/>
+      <!-- Chamber -->
+      <rect x="220" y="155" width="80" height="70" rx="10" fill="rgba(0,198,224,0.08)" stroke="rgba(0,198,224,0.4)" stroke-width="1.5"/>
+      <!-- Labels -->
+      <text x="256" y="194" fill="rgba(0,198,224,0.7)" font-size="9" font-family="monospace" text-anchor="middle">MIXING</text>
+      <text x="256" y="205" fill="rgba(0,198,224,0.5)" font-size="7" font-family="monospace" text-anchor="middle">CHAMBER</text>
+      <!-- Grid dots -->
+      <circle cx="160" cy="130" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="200" cy="110" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="320" cy="110" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="360" cy="130" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="160" cy="270" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="200" cy="290" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="320" cy="290" r="2.5" fill="rgba(0,198,224,0.3)"/>
+      <circle cx="360" cy="270" r="2.5" fill="rgba(0,198,224,0.3)"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">재직자 환급과정 · 교육비 무료</div>
+    <div class="hero-badge-free">🎓 수강료 전액 지원</div>
+    <h1 class="hero-title">
+      <span class="line1">3D프린팅 기반</span>
+      <span class="highlight">랩온어칩 설계·제작</span>
+      <span class="line2">실무 훈련과정</span>
+    </h1>
+    <p class="hero-tagline">설계부터 제작까지, 현장에서 바로 쓰는 랩온어칩 기술!</p>
+    <p class="hero-subtitle">바이오·의료·화학·진단 분야 재직자를 위한 3D프린팅 기반 랩온어칩 설계 및 제작 실무 훈련. 실제 연구 및 산업 현장에서 바로 활용 가능한 모델링·마스터몰드 제작 기술을 집중적으로 실습합니다.</p>
+    <div class="hero-dates">
+      <div class="date-pill">
+        <div class="round">1차</div>
+        <div class="date-str">2026. 6. 13. <span style="color:var(--cyan);font-size:0.85rem">(토)</span></div>
+        <div class="time-str">오전 9시 ~ 오후 5시 · 종일과정</div>
+      </div>
+      <div class="date-pill">
+        <div class="round">2차</div>
+        <div class="date-str">2026. 6. 27. <span style="color:var(--cyan);font-size:0.85rem">(토)</span></div>
+        <div class="time-str">오전 9시 ~ 오후 5시 · 종일과정</div>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">📋 수강 신청하기</a>
+      <a href="#curriculum" class="btn-secondary">교육 내용 보기</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">총 회차</div></div>
+    <div class="stat"><div class="stat-num">8h</div><div class="stat-label">회당 교육시간</div></div>
+    <div class="stat"><div class="stat-num">₩0</div><div class="stat-label">교육비</div></div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="features" id="features">
+  <div class="reveal">
+    <span class="section-label">// 교육 특징</span>
+    <div class="divider"></div>
+    <h2 class="section-title">현장 중심 집중 실습</h2>
+    <p class="section-desc">단순 이론 강의를 넘어, 실제 바이오·진단 현장에서 즉시 활용 가능한 실무 역량을 키웁니다.</p>
+  </div>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <span class="feature-icon">💰</span>
+      <div class="feature-title">재직자 환급과정 — 교육비 무료</div>
+      <div class="feature-desc">재직자 환급과정으로 운영되어 수강료 전액이 지원됩니다. 별도 비용 부담 없이 수강 가능합니다.</div>
+      <span class="feature-tag">FREE</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🖨️</span>
+      <div class="feature-title">3D 모델링 기반 랩온어칩 설계 실습</div>
+      <div class="feature-desc">Fusion 360 기반 마이크로채널 설계부터 고해상도 3D프린팅 마스터몰드 제작까지 단계별로 실습합니다.</div>
+      <span class="feature-tag">HANDS-ON</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔬</span>
+      <div class="feature-title">교해상도 3D프린터 마스터몰드 제작</div>
+      <div class="feature-desc">고해상도 산업용 3D프린터로 실제 연구·생산에 활용 가능한 마스터몰드를 직접 제작합니다.</div>
+      <span class="feature-tag">INDUSTRIAL</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🧬</span>
+      <div class="feature-title">연구주제 맞춤형 현장실습 진행</div>
+      <div class="feature-desc">바이오·의료기기·진단 분야 응용 사례를 기반으로 참가자 연구주제에 맞춘 맞춤형 피드백을 제공합니다.</div>
+      <span class="feature-tag">CUSTOMIZED</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎯</span>
+      <div class="feature-title">바이오·의료기기·진단 분야 응용 중심</div>
+      <div class="feature-desc">드랍렛·세포·진단칩 등 실제 응용 사례를 중심으로 이론과 실습을 유기적으로 연결합니다.</div>
+      <span class="feature-tag">APPLIED</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📜</span>
+      <div class="feature-title">수료증 발급</div>
+      <div class="feature-desc">과정 수료 후 재능대학교 K-하이테크플랫폼사업단 명의의 공식 수료증이 발급됩니다.</div>
+      <span class="feature-tag">CERTIFIED</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── CURRICULUM ── -->
+<section class="curriculum" id="curriculum">
+  <div class="reveal">
+    <span class="section-label">// 교육 내용</span>
+    <div class="divider"></div>
+    <h2 class="section-title">4단계 실무 커리큘럼</h2>
+    <p class="section-desc">마이크로플루이딕스 기초 이해부터 연구주제 맞춤 실습까지, 체계적인 4모듈 구성으로 진행됩니다.</p>
+  </div>
+  <div class="curriculum-grid reveal">
+    <div class="module m1">
+      <div class="module-header">
+        <div class="module-num">01</div>
+        <div class="module-title-block">
+          <h3>랩온어칩 기초 및 응용 이해</h3>
+          <p>Fundamentals & Applications</p>
+        </div>
+      </div>
+      <div class="module-body">
+        <ul class="module-list">
+          <li>마이크로플루이딕스 기본 개념</li>
+          <li>바이오·의료 응용 사례</li>
+          <li>드랍렛·세포·진단칩 응용기술</li>
+        </ul>
+      </div>
+    </div>
+    <div class="module m2">
+      <div class="module-header">
+        <div class="module-num">02</div>
+        <div class="module-title-block">
+          <h3>3D 모델링 실습</h3>
+          <p>3D Modeling Practice</p>
+        </div>
+      </div>
+      <div class="module-body">
+        <ul class="module-list">
+          <li>Fusion 360 기반 설계 실습</li>
+          <li>마이크로채널 설계 방법</li>
+          <li>제작 가능 구조 최적화</li>
+        </ul>
+      </div>
+    </div>
+    <div class="module m3">
+      <div class="module-header">
+        <div class="module-num">03</div>
+        <div class="module-title-block">
+          <h3>마스터몰드 제작</h3>
+          <p>Master Mold Fabrication</p>
+        </div>
+      </div>
+      <div class="module-body">
+        <ul class="module-list">
+          <li>고해상도 3D프린팅 실습</li>
+          <li>출력 조건 최적화</li>
+          <li>후처리 및 몰드 활용 기술</li>
+        </ul>
+      </div>
+    </div>
+    <div class="module m4">
+      <div class="module-header">
+        <div class="module-num">04</div>
+        <div class="module-title-block">
+          <h3>연구주제 맞춤형 실습</h3>
+          <p>Customized Research Lab</p>
+        </div>
+      </div>
+      <div class="module-body">
+        <ul class="module-list">
+          <li>참가자 연구주제 기반 피드백</li>
+          <li>현장형 문제 해결 실습</li>
+          <li>바이오칩 제작 응용 전략</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCHEDULE ── -->
+<section class="schedule" id="schedule">
+  <div class="reveal">
+    <span class="section-label">// 교육 일정</span>
+    <div class="divider"></div>
+    <h2 class="section-title">2026년 6월 집중 교육</h2>
+    <p class="section-desc">총 2회차로 구성된 종일 집중 과정입니다. 각 회차는 독립적으로 운영되며, 두 회차 모두 수강을 권장합니다.</p>
+  </div>
+  <div class="schedule-layout reveal">
+    <div class="schedule-card">
+      <div class="schedule-round"><span class="round-badge">1</span>1차 교육</div>
+      <div class="schedule-date">2026. 6. <span>13</span>.</div>
+      <div class="schedule-time">토요일 · 오전 9시 ~ 오후 5시</div>
+      <div class="schedule-info">
+        <p>📍 <strong>재능대학교 K-하이테크플랫폼사업단 혁신관 1층 훈련원</strong></p>
+        <p>⏱️ <strong>8시간</strong> 종일 집중 과정</p>
+        <p>🚶 제물포역에서 도보 15분</p>
+      </div>
+    </div>
+    <div class="schedule-card">
+      <div class="schedule-round"><span class="round-badge">2</span>2차 교육</div>
+      <div class="schedule-date">2026. 6. <span>27</span>.</div>
+      <div class="schedule-time">토요일 · 오전 9시 ~ 오후 5시</div>
+      <div class="schedule-info">
+        <p>📍 <strong>재능대학교 K-하이테크플랫폼사업단 혁신관 1층 훈련원</strong></p>
+        <p>⏱️ <strong>8시간</strong> 종일 집중 과정</p>
+        <p>🚶 제물포역에서 도보 15분</p>
+      </div>
+    </div>
+  </div>
+  <div class="total-box reveal">
+    <div>
+      <div class="label">총 교육 과정</div>
+      <div style="font-size:0.85rem;color:#fff;margin-top:4px">2026년 6월 13일 · 27일 (총 2회)</div>
+    </div>
+    <div style="text-align:center">
+      <div class="label">총 교육시간</div>
+      <div class="value">16h</div>
+    </div>
+    <div style="text-align:right">
+      <div class="label">수강료</div>
+      <div class="value" style="color:var(--orange)">무료</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TARGET ── -->
+<section class="target" id="target">
+  <div class="reveal">
+    <span class="section-label">// 모집 대상</span>
+    <div class="divider"></div>
+    <h2 class="section-title">이런 분들을 위한 과정입니다</h2>
+    <p class="section-desc">바이오·의료·화학·진단 분야 종사자라면 누구나 지원 가능합니다.</p>
+  </div>
+  <div class="target-grid reveal">
+    <div class="target-item">
+      <div class="check-icon">✓</div>
+      <div class="target-text">바이오·의료·화학·진단 분야 재직자</div>
+    </div>
+    <div class="target-item">
+      <div class="check-icon">✓</div>
+      <div class="target-text">바이오칩 및 의료기기 분야 실무자</div>
+    </div>
+    <div class="target-item">
+      <div class="check-icon">✓</div>
+      <div class="target-text">연구개발 및 분석업무 담당자</div>
+    </div>
+    <div class="target-item">
+      <div class="check-icon">✓</div>
+      <div class="target-text">마이크로플루이딕스 기술 활용 희망자</div>
+    </div>
+    <div class="target-item">
+      <div class="check-icon">✓</div>
+      <div class="target-text">3D프린팅 기반 바이오제작 기술에 관심 있는 산업체 관계자</div>
+    </div>
+    <div class="target-item">
+      <div class="check-icon">✓</div>
+      <div class="target-text">LoC 기술을 연구·제품에 적용하고자 하는 스타트업 관계자</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BENEFITS ── -->
+<section class="benefits" id="benefits">
+  <div class="reveal">
+    <span class="section-label">// 참가 혜택</span>
+    <div class="divider"></div>
+    <h2 class="section-title">수강생 전원 제공 혜택</h2>
+    <p class="section-desc">수강부터 수료 후까지, 실질적인 지원을 아끼지 않습니다.</p>
+  </div>
+  <div class="benefits-grid reveal">
+    <div class="benefit-item">
+      <div class="benefit-icon">💰</div>
+      <div class="benefit-title">교육비 전액 무료</div>
+      <div class="benefit-desc">재직자 환급과정으로 수강료 부담 없음</div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon">🏭</div>
+      <div class="benefit-title">실습 중심 현장교육</div>
+      <div class="benefit-desc">이론보다 실무, 바로 쓰는 기술 중심</div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon">🖨️</div>
+      <div class="benefit-title">장비 직접 활용 기회</div>
+      <div class="benefit-desc">고해상도 3D프린터 등 장비 실습 제공</div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon">💼</div>
+      <div class="benefit-title">연구개발 적용 컨설팅 지원</div>
+      <div class="benefit-desc">참가자 연구 과제에 대한 맞춤 자문</div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon">📜</div>
+      <div class="benefit-title">수료증 발급</div>
+      <div class="benefit-desc">공식 기관 명의 수료증 발급</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LOCATION ── -->
+<section class="location" id="location">
+  <div class="location-layout">
+    <div class="location-info reveal">
+      <span class="section-label">// 교육 장소</span>
+      <div class="divider"></div>
+      <h2 class="section-title" style="font-size:1.9rem">재능대학교<br>K-하이테크플랫폼사업단</h2>
+      <p>혁신관 1층 훈련원 (제물포역 인근)<br>인천광역시 소재 재능대학교 캠퍼스 내</p>
+      <div class="location-badge">🚶 제물포역 도보 15분</div>
+      <p style="margin-top:20px;font-size:0.82rem">
+        문의: <strong style="color:#fff">namjh@jeiu.ac.kr</strong><br>
+        홈페이지: <strong style="color:#fff">jeiu-khp.com</strong><br>
+        문의 당일 내 답변 가능
+      </p>
+    </div>
+    <div class="map-placeholder reveal">
+      <div class="map-icon">📍</div>
+      <strong>재능대학교 혁신관 1층 훈련원</strong>
+      <p>인천광역시 · 제물포역 도보 15분</p>
+      <a href="https://jeiu-khp.com" target="_blank" style="color:var(--cyan);font-size:0.8rem;text-decoration:none;margin-top:8px;border:1px solid rgba(0,198,224,0.3);padding:8px 18px;border-radius:8px;">🌐 jeiu-khp.com 바로가기</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section class="contact" id="contact">
+  <div class="contact-content">
+    <div class="reveal">
+      <span class="section-label" style="display:block;margin-bottom:12px">// 문의 및 신청</span>
+      <h2 class="contact-title">지금 바로 신청하세요! <span>🔥</span></h2>
+      <p class="contact-sub">현장에서 바로 활용하는 랩온어칩 실무 기술,<br>재직자 환급과정으로 무료로 배울 수 있는 기회를 놓치지 마세요.</p>
+    </div>
+    <div class="contact-cards reveal">
+      <div class="contact-card">
+        <div class="cc-label">📧 이메일 문의</div>
+        <div class="cc-val">namjh@jeiu.ac.kr</div>
+        <div class="cc-sub">문의 당일 내 답변 가능</div>
+      </div>
+      <div class="contact-card">
+        <div class="cc-label">🌐 홈페이지</div>
+        <div class="cc-val">jeiu-khp.com</div>
+        <div class="cc-sub">재능대학교 K-하이테크플랫폼사업단</div>
+      </div>
+      <div class="qr-placeholder">
+        <div class="qr-box">📱</div>
+        <div class="qr-label">QR코드로 신청 바로가기</div>
+      </div>
+    </div>
+    <div class="reveal">
+      <a href="mailto:namjh@jeiu.ac.kr" class="btn-primary" style="font-size:1.05rem;padding:16px 44px">
+        📋 수강 신청하기
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <strong>재능대학교 K-하이테크플랫폼사업단</strong>
+    JEI University · K-Hitech Platform
+  </div>
+  <div class="footer-links">
+    <a href="#home">홈</a>
+    <a href="#curriculum">교육내용</a>
+    <a href="#schedule">일정</a>
+    <a href="mailto:namjh@jeiu.ac.kr">이메일 문의</a>
+    <a href="https://jeiu-khp.com" target="_blank">홈페이지</a>
+  </div>
+  <div class="footer-copy">© 2026 재능대학교 K-하이테크플랫폼사업단. All rights reserved.</div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      // Stagger children if it's a grid
+      entry.target.style.transitionDelay = '0s';
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// Smooth nav highlight
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--cyan)' : '';
+  });
+});
+
+// Stagger grid cards
+document.querySelectorAll('.features-grid, .curriculum-grid, .benefits-grid, .target-grid').forEach(grid => {
+  const cards = grid.children;
+  Array.from(cards).forEach((card, i) => {
+    card.style.transitionDelay = (i * 0.08) + 's';
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  });
+  const gridObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        Array.from(entry.target.children).forEach(card => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        });
+        gridObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  gridObs.observe(grid);
+});
+</script>
+</body>
+</html>
